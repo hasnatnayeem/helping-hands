@@ -92,3 +92,4 @@ media
 data
 db.sqlite3
 helping_hands/settings.py
+scripts

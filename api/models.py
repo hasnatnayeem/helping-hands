@@ -22,4 +22,4 @@ class Donation(models.Model):
     logged_at = models.DateTimeField(auto_now_add=True, blank=True)
 
     def __str__(self):
-        return self.donor + ' - ' + self.amount
+        return str(self.donor) + ' - ' + str(self.amount)

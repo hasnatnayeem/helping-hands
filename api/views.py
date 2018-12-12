@@ -59,24 +59,5 @@ class DonationView(viewsets.ModelViewSet):
     http_method_names = ['get','post']
 
     def get_queryset(self):
-        return Donation.objects.all()
+        return Donation.objects.all().order_by('-collected_at')
     
-    # def post(self, request, pk=None):
-    #     profile = self.get_object()
-    #     data = request.data
-    #     if 'image' in data:
-    #         img_name = 'profiles/' + str(profile.id) + ".jpg"
-    #         directory = 'media'
-    #         file_path = os.path.join(directory, img_name)
-    #         save_profile_picture(file_path, data['image'])
-    #         profile.image = img_name
-    #         profile.save()
-    #         del data['image']
-            
-    #     serializer = ProfileSerializer(profile, data=request.data, partial=True) # set partial=True to update a data partially
-    #     if serializer.is_valid():
-    #         serializer.save()
-    #         return Response({"message": "Profile updated successfully"})
-
-    #     return Response({"message": "An error occurred"})
-        

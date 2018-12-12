@@ -11,3 +11,8 @@ class Profile(models.Model):
     country = models.CharField(max_length=100, default='Bangladesh', blank=True)
     token = models.CharField(max_length=255, blank=True)
 
+class Donation(models.Model):
+    donor = models.ManyToManyField(Profile)
+    collector = models.ManyToManyField(User)
+    collected_at = models.DateTimeField()
+    logged_at = models.DateTimeField(auto_now_add=True, blank=True)

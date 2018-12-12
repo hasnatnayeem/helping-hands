@@ -20,3 +20,6 @@ class Donation(models.Model):
     collector = models.ForeignKey(User, on_delete=models.CASCADE)
     collected_at = models.DateField()
     logged_at = models.DateTimeField(auto_now_add=True, blank=True)
+
+    def __str__(self):
+        return self.donor + ' - ' + self.amount

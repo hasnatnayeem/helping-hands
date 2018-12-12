@@ -19,9 +19,9 @@ class ProfileAdmin(admin.ModelAdmin):
 
 @admin.register(Donation)
 class DonationAdmin(admin.ModelAdmin):
-    # fields = ('donor', 'collector', 'collected_at', )
-    # list_display = ('donor', 'collector', 'collected_at', )
-    # list_filter = ['collected_at']
+    fields = ('donor', 'amount', 'collector', 'collected_at', )
+    list_display = ('donor', 'amount', 'collector', 'collected_at', )
+    list_filter = ['collector']
 
     def get_form(self, request, obj=None, **kwargs):
         form = super(DonationAdmin, self).get_form(request, obj, **kwargs)

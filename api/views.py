@@ -59,5 +59,13 @@ class DonationView(viewsets.ModelViewSet):
     http_method_names = ['get','post']
 
     def get_queryset(self):
-        return Donation.objects.all().order_by('-collected_at')
+        """
+        Optionally restricts the returned purchases to a given user,
+        by filtering against a `username` query parameter in the URL.
+        """
+        queryset = Donation.objects.all().order_by('-collected_at')
+        collector_id = self.request.query_params.get('collector_id', None)
+        if collector_id is not None:
+            queryset = queryset.filter(collector_id=collector_id)
+        return queryset
     

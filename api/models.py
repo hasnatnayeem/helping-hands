@@ -15,7 +15,7 @@ class Profile(models.Model):
         return self.first_name + " " + self.last_name
 
 class Donation(models.Model):
-    donor = models.ManyToManyField(Profile)
-    collector = models.ManyToManyField(User)
-    collected_at = models.DateTimeField()
+    donor = models.ForeignKey(Profile, on_delete=models.CASCADE)
+    collector = models.ForeignKey(User, on_delete=models.CASCADE)
+    collected_at = models.DateField()
     logged_at = models.DateTimeField(auto_now_add=True, blank=True)

@@ -11,7 +11,7 @@ admin.site.site_title = 'Administration'
 
 @admin.register(Profile)
 class ProfileAdmin(admin.ModelAdmin):
-    fields = ('user', 'first_name', 'last_name', 'phone', 'email', 'address', )
+    fields = ('user', 'first_name', 'last_name', 'phone', 'email', 'address', 'photo')
     list_display = ('first_name', 'last_name', 'phone', 'email', 'address', )
     list_filter = []
 

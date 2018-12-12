@@ -8,6 +8,7 @@ class Profile(models.Model):
     phone = models.CharField(max_length=45, blank=True)
     email = models.EmailField(blank=True)
     address = models.CharField(max_length=255, blank=True)
+    photo = models.CharField(max_length=255, blank=True)
     country = models.CharField(max_length=100, default='Bangladesh', blank=True)
     token = models.CharField(max_length=255, blank=True)
 

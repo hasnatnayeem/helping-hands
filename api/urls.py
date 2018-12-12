@@ -2,9 +2,10 @@ from django.urls import path, include
 from rest_framework import routers
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 from .views import LoginView
+from .views import DonationView
 
 router = routers.DefaultRouter()
-# router.register('donations', views.DonationView, 'Donation')
+router.register('donations', DonationView, 'Donation')
 
 urlpatterns = [
     path('', include(router.urls)),

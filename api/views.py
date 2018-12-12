@@ -1,16 +1,15 @@
 from django.shortcuts import render
+from rest_framework import viewsets
 from rest_framework_simplejwt.views import TokenObtainSlidingView
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from rest_framework.response import Response
 from rest_framework import status
 from django.contrib.auth.models import User
 from .models import Profile
+from .models import Donation
+from .serializers import DonationSerializer
 
 class LoginView(TokenObtainSlidingView):
-
-    def get_extra_actions():
-        return  ''
-        
     def post(self, request, *args, **kwargs):
         response = super(LoginView, self).post(request, *args, **kwargs)
         res = response.data
@@ -53,3 +52,31 @@ class LoginView(TokenObtainSlidingView):
                         'token': str(token),
                 }, status=status.HTTP_200_OK)
 
+
+
+class DonationView(viewsets.ModelViewSet):
+    serializer_class = DonationSerializer
+    http_method_names = ['get','post']
+
+    def get_queryset(self):
+        return Donation.objects.all()
+    
+    # def post(self, request, pk=None):
+    #     profile = self.get_object()
+    #     data = request.data
+    #     if 'image' in data:
+    #         img_name = 'profiles/' + str(profile.id) + ".jpg"
+    #         directory = 'media'
+    #         file_path = os.path.join(directory, img_name)
+    #         save_profile_picture(file_path, data['image'])
+    #         profile.image = img_name
+    #         profile.save()
+    #         del data['image']
+            
+    #     serializer = ProfileSerializer(profile, data=request.data, partial=True) # set partial=True to update a data partially
+    #     if serializer.is_valid():
+    #         serializer.save()
+    #         return Response({"message": "Profile updated successfully"})
+
+    #     return Response({"message": "An error occurred"})
+        

@@ -11,6 +11,9 @@ class Profile(models.Model):
     country = models.CharField(max_length=100, default='Bangladesh', blank=True)
     token = models.CharField(max_length=255, blank=True)
 
+    def __str__(self):
+        return self.first_name + " " + self.last_name
+
 class Donation(models.Model):
     donor = models.ManyToManyField(Profile)
     collector = models.ManyToManyField(User)

@@ -16,6 +16,7 @@ class Profile(models.Model):
 
 class Donation(models.Model):
     donor = models.ForeignKey(Profile, on_delete=models.CASCADE)
+    amount = models.PositiveSmallIntegerField()
     collector = models.ForeignKey(User, on_delete=models.CASCADE)
     collected_at = models.DateField()
     logged_at = models.DateTimeField(auto_now_add=True, blank=True)

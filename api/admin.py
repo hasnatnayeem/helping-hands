@@ -19,8 +19,9 @@ class ProfileAdmin(admin.ModelAdmin):
 
 @admin.register(Donation)
 class DonationAdmin(admin.ModelAdmin):
+    date_hierarchy = 'collected_at'
     fields = ('donor', 'amount', 'collector', 'collected_at', )
-    list_display = ('donor', 'amount', 'collected_at', 'collector')
+    list_display = ('donor', 'amount', 'collected_at', 'logged_at', 'collector')
     list_filter = ['collector']
 
     def get_form(self, request, obj=None, **kwargs):

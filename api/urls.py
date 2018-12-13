@@ -3,9 +3,11 @@ from rest_framework import routers
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 from .views import LoginView
 from .views import DonationView
+from .views import ProfileView
 
 router = routers.DefaultRouter()
 router.register('donations', DonationView, 'Donation')
+router.register('profiles', ProfileView, 'Profile')
 
 urlpatterns = [
     path('', include(router.urls)),

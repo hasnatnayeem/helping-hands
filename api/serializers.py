@@ -20,5 +20,5 @@ class DonationSerializer(serializers.ModelSerializer):
 class ProfileSerializer(serializers.ModelSerializer):
     class Meta:
         model = Profile
-        fields = ('id', 'photo')
+        fields = ('id', 'name', 'photo')
         

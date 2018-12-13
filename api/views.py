@@ -8,6 +8,7 @@ from django.contrib.auth.models import User
 from .models import Profile
 from .models import Donation
 from .serializers import DonationSerializer
+from .serializers import ProfileSerializer
 
 class LoginView(TokenObtainSlidingView):
     def post(self, request, *args, **kwargs):
@@ -68,3 +69,8 @@ class DonationView(viewsets.ModelViewSet):
             queryset = queryset.filter(collector_id=collector_id)
         return queryset
     
+
+class ProfileView(viewsets.ModelViewSet):
+    queryset = Profile.objects.all()
+    serializer_class = ProfileSerializer
+    http_method_names = ['get']

@@ -44,8 +44,7 @@ class LoginView(TokenObtainSlidingView):
                         'user': {
                                 'id': user.pk,
                                 'profile_id': profile.id,
-                                'first_name': profile.first_name,
-                                'last_name': profile.last_name,
+                                'name': profile.name,
                                 'address': profile.address,
                                 'phone': profile.phone,
                         },

@@ -9,6 +9,7 @@ class Profile(models.Model):
     address = models.CharField(max_length=255, blank=True)
     photo = models.CharField(max_length=255, blank=True)
     country = models.CharField(max_length=100, default='Bangladesh', blank=True)
+    blood_group = models.CharField(max_length=100, blank=True)
     token = models.CharField(max_length=255, blank=True)
 
     def __str__(self):

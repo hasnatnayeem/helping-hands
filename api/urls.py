@@ -7,7 +7,7 @@ from .views import ProfileView
 from .views import get_donation_summary
 
 router = routers.DefaultRouter()
-# router.register('donations', DonationView, 'Donation')
+router.register('donations', DonationView, 'Donation')
 router.register('profiles', ProfileView, 'Profile')
 
 urlpatterns = [

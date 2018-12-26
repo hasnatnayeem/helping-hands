@@ -75,7 +75,7 @@ class DonationView(viewsets.ModelViewSet):
 def get_donation_summary(request):
     today = datetime.now()
     with connection.cursor() as cursor:
-        cursor.execute("SELECT DATE_FORMAT(collected_at, '%M %Y') as d, sum(amount) FROM api_donation WHERE DATE_FORMAT(collected_at, '%Y-%m') >= '2018-09' GROUP BY d")
+        cursor.execute("SELECT DATE_FORMAT(collected_at, '%M %Y') as d, sum(amount) FROM api_donation WHERE DATE_FORMAT(collected_at, '%Y-%m') >= '{}' GROUP BY d".format(datetime.strftime(today,'%Y-%m')))
         summary = cursor.fetchall()
     
     queryset = Donation.objects.all().order_by('-collected_at').filter(collected_at__year=today.year, collected_at__month=today.month)

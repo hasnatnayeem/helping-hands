@@ -14,6 +14,7 @@ from django.db.models import *
 from rest_framework.decorators import api_view
 from django.core import serializers
 from django.db import connection
+from dateutil.relativedelta import relativedelta
 
 
 class LoginView(TokenObtainSlidingView):
@@ -73,9 +74,10 @@ class DonationView(viewsets.ModelViewSet):
 
 @api_view()
 def get_donation_summary(request):
-    today = datetime.now()
+    today = datetime.now() - relativedelta(months=3)
+    
     with connection.cursor() as cursor:
-        cursor.execute("SELECT DATE_FORMAT(collected_at, '%M %Y') as d, sum(amount) FROM api_donation WHERE DATE_FORMAT(collected_at, '%Y-%m') >= '{}' GROUP BY d".format(datetime.strftime(today,'%Y-%m')))
+        cursor.execute("SELECT DATE_FORMAT(collected_at, '%M %Y') as d, sum(amount) FROM api_donation WHERE DATE_FORMAT(collected_at, '%Y-%m') >= '{}' GROUP BY d ORDER BY collected_at DESC".format(datetime.strftime(today,'%Y-%m')))
         summary = cursor.fetchall()
     
     queryset = Donation.objects.all().order_by('-collected_at').filter(collected_at__year=today.year, collected_at__month=today.month)

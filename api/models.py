@@ -24,3 +24,14 @@ class Donation(models.Model):
 
     def __str__(self):
         return str(self.donor) + ' - ' + str(self.amount)
+
+
+class Expense(models.Model):
+    spender = models.ForeignKey(Profile, on_delete=models.CASCADE)
+    amount = models.PositiveSmallIntegerField()
+    spent_at = models.DateField()
+    reference = models.CharField(max_length=255, blank=True)
+    logged_at = models.DateTimeField(auto_now_add=True, blank=True)
+
+    def __str__(self):
+        return str(self.spender) + ' - ' + str(self.amount)

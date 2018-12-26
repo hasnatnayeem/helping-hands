@@ -2,6 +2,7 @@ from django.contrib import admin
 from django.contrib.auth.models import User
 from .models import Profile
 from .models import Donation
+from .models import Expense
 
 admin.site.site_header = 'Helping Hands Administration'
 admin.site.index_title = 'Helping Hands'
@@ -32,8 +33,19 @@ class DonationAdmin(admin.ModelAdmin):
 
     def get_form(self, request, obj=None, **kwargs):
         form = super(DonationAdmin, self).get_form(request, obj, **kwargs)
-        # Show only unassinged usernames as options while creating profile
         if not obj:
             form.base_fields['collector'].queryset = User.objects.filter(is_staff=True, is_superuser=False)
         return form
-    # pass
+
+
+@admin.register(Expense)
+class ExpenseAdmin(admin.ModelAdmin):
+    date_hierarchy = 'spent_at'
+    fields = ('spender', 'amount', 'reference', 'spent_at', )
+    list_display = ('spender', 'amount', 'reference', 'spent_at', 'logged_at')
+
+    def get_form(self, request, obj=None, **kwargs):
+        form = super(ExpenseAdmin, self).get_form(request, obj, **kwargs)
+        if not obj:
+            form.base_fields['spender'].queryset = Profile.objects.filter(user__id=request.user.id, user__is_staff=True, user__is_superuser=True)
+        return form

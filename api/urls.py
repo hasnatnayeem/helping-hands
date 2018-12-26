@@ -5,6 +5,7 @@ from .views import LoginView
 from .views import DonationView
 from .views import ProfileView
 from .views import get_donation_summary
+from .views import get_expense_summary
 
 router = routers.DefaultRouter()
 router.register('donations', DonationView, 'Donation')
@@ -16,5 +17,6 @@ urlpatterns = [
     path('token/', TokenObtainPairView.as_view()),
     path('token/refresh/', TokenRefreshView.as_view()),
     path('login/', LoginView.as_view()),
-    path('donation-summary/', get_donation_summary)
+    path('donation-summary/', get_donation_summary),
+    path('expense-summary/', get_expense_summary),
 ]

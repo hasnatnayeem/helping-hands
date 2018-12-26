@@ -7,6 +7,8 @@ from rest_framework import status
 from django.contrib.auth.models import User
 from .models import Profile
 from .models import Donation
+from .models import Expense
+from .serializers import ExpenseSerializer
 from .serializers import DonationSerializer
 from .serializers import ProfileSerializer
 from datetime import datetime
@@ -97,6 +99,23 @@ def get_donation_summary(request):
                     'summary': summary,
             }, status=status.HTTP_200_OK)
     
+@api_view(['GET'])
+def get_expense_summary(request):
+    today = datetime.now()
+    month_limit = datetime.now() - relativedelta(months=3)
+    
+    with connection.cursor() as cursor:
+        cursor.execute("SELECT DATE_FORMAT(spent_at, '%M %Y') as d, sum(amount) FROM api_expense WHERE DATE_FORMAT(spent_at, '%Y-%m') >= '{}' GROUP BY d ORDER BY spent_at DESC".format(datetime.strftime(month_limit, '%Y-%m')))
+        summary = cursor.fetchall()
+    
+    queryset = Expense.objects.all().order_by('-spent_at').filter(spent_at__year=today.year, spent_at__month=today.month)
+    expenses = ExpenseSerializer(queryset, many=True).data
+
+    return Response({
+                    'expenses': expenses,
+                    'summary': summary,
+            }, status=status.HTTP_200_OK)
+
 
 class ProfileView(viewsets.ModelViewSet):
     queryset = Profile.objects.all()

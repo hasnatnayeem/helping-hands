@@ -28,7 +28,7 @@ class ExpenseSerializer(serializers.ModelSerializer):
         
     def to_representation(self, instance):
         representation = super(ExpenseSerializer, self).to_representation(instance)
-        representation['spent_at'] = instance.collected_at.strftime('%d-%m-%Y')
+        representation['spent_at'] = instance.spent_at.strftime('%d-%m-%Y')
         return representation
 
 

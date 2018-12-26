@@ -9,11 +9,15 @@ from .models import Profile
 from .models import Donation
 from .serializers import DonationSerializer
 from .serializers import ProfileSerializer
+from datetime import datetime
+from django.db.models import *
+from rest_framework.decorators import api_view
+from django.core import serializers
+from django.db import connection
+
 
 class LoginView(TokenObtainSlidingView):
     def post(self, request, *args, **kwargs):
-        response = super(LoginView, self).post(request, *args, **kwargs)
-        res = response.data
         req = request.data
         username = req.get('username')
         password = req.get('password')
@@ -58,16 +62,40 @@ class DonationView(viewsets.ModelViewSet):
     serializer_class = DonationSerializer
     http_method_names = ['get','post']
 
+
+    def get(self, request, *args, **kwargs):
+        return Response(Donation.objects.raw("SELECT DATE_FORMAT(collected_at, '%Y-%m') as d, sum(amount) FROM api_donation WHERE DATE_FORMAT(collected_at, '%Y-%m') >= '2018-09' GROUP BY d"))
+    def post(self, request, *args, **kwargs):
+        return Response(Donation.objects.raw("SELECT DATE_FORMAT(collected_at, '%Y-%m') as d, sum(amount) FROM api_donation WHERE DATE_FORMAT(collected_at, '%Y-%m') >= '2018-09' GROUP BY d"))
+
+
     def get_queryset(self):
-        """
-        Optionally restricts the returned purchases to a given user,
-        by filtering against a `username` query parameter in the URL.
-        """
-        queryset = Donation.objects.all().order_by('-collected_at')
+        today = datetime.now()
+        queryset = Donation.objects.all().order_by('-collected_at').filter(collected_at__year=today.year, collected_at__month=today.month)
         collector_id = self.request.query_params.get('collector_id', None)
         if collector_id is not None:
             queryset = queryset.filter(collector_id=collector_id)
         return queryset
+
+
+@api_view()
+def get_donation_summary(request):
+    today = datetime.now()
+    with connection.cursor() as cursor:
+        cursor.execute("SELECT DATE_FORMAT(collected_at, '%M %Y') as d, sum(amount) FROM api_donation WHERE DATE_FORMAT(collected_at, '%Y-%m') >= '2018-09' GROUP BY d")
+        summary = cursor.fetchall()
+    
+    queryset = Donation.objects.all().order_by('-collected_at').filter(collected_at__year=today.year, collected_at__month=today.month)
+    collector_id = request.query_params.get('collector_id', None)
+    if collector_id is not None:
+        queryset = queryset.filter(collector_id=collector_id)
+
+    donations = DonationSerializer(queryset, many=True).data
+
+    return Response({
+                    'donations': donations,
+                    'summary': summary,
+            }, status=status.HTTP_200_OK)
     
 
 class ProfileView(viewsets.ModelViewSet):

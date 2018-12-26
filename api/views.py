@@ -74,16 +74,21 @@ class DonationView(viewsets.ModelViewSet):
 
 @api_view()
 def get_donation_summary(request):
-    today = datetime.now() - relativedelta(months=3)
+    collector_id = request.query_params.get('collector_id', None)
+    today = datetime.now()
+    month_limit = datetime.now() - relativedelta(months=3)
     
     with connection.cursor() as cursor:
-        cursor.execute("SELECT DATE_FORMAT(collected_at, '%M %Y') as d, sum(amount) FROM api_donation WHERE DATE_FORMAT(collected_at, '%Y-%m') >= '{}' GROUP BY d ORDER BY collected_at DESC".format(datetime.strftime(today,'%Y-%m')))
+        if collector_id is None:
+            cursor.execute("SELECT DATE_FORMAT(collected_at, '%M %Y') as d, sum(amount) FROM api_donation WHERE DATE_FORMAT(collected_at, '%Y-%m') >= '{}' GROUP BY d ORDER BY collected_at DESC".format(datetime.strftime(month_limit, '%Y-%m')))
+        else:
+            cursor.execute("SELECT DATE_FORMAT(collected_at, '%M %Y') as d, sum(amount) FROM api_donation WHERE DATE_FORMAT(collected_at, '%Y-%m') >= '{}' AND collector_id = {} GROUP BY d ORDER BY collected_at DESC".format(datetime.strftime(month_limit, '%Y-%m'), collector_id))
+            
         summary = cursor.fetchall()
     
     queryset = Donation.objects.all().order_by('-collected_at').filter(collected_at__year=today.year, collected_at__month=today.month)
-    collector_id = request.query_params.get('collector_id', None)
     if collector_id is not None:
-        queryset = queryset.filter(collector_id=collector_id)
+        queryset = queryset.filter(collector_id=int(collector_id))
 
     donations = DonationSerializer(queryset, many=True).data
 

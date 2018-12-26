@@ -62,13 +62,6 @@ class DonationView(viewsets.ModelViewSet):
     serializer_class = DonationSerializer
     http_method_names = ['get','post']
 
-
-    def get(self, request, *args, **kwargs):
-        return Response(Donation.objects.raw("SELECT DATE_FORMAT(collected_at, '%Y-%m') as d, sum(amount) FROM api_donation WHERE DATE_FORMAT(collected_at, '%Y-%m') >= '2018-09' GROUP BY d"))
-    def post(self, request, *args, **kwargs):
-        return Response(Donation.objects.raw("SELECT DATE_FORMAT(collected_at, '%Y-%m') as d, sum(amount) FROM api_donation WHERE DATE_FORMAT(collected_at, '%Y-%m') >= '2018-09' GROUP BY d"))
-
-
     def get_queryset(self):
         today = datetime.now()
         queryset = Donation.objects.all().order_by('-collected_at').filter(collected_at__year=today.year, collected_at__month=today.month)

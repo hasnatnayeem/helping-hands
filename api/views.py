@@ -17,6 +17,7 @@ from rest_framework.decorators import api_view
 from django.core import serializers
 from django.db import connection
 from dateutil.relativedelta import relativedelta
+from django.db.models import Sum
 
 
 class LoginView(TokenObtainSlidingView):
@@ -112,6 +113,7 @@ def get_expense_summary(request):
     expenses = ExpenseSerializer(queryset, many=True).data
 
     return Response({
+                    'balance': Donation.objects.aggregate(Sum('amount'))['amount__sum'] - Expense.objects.aggregate(Sum('amount'))['amount__sum'],
                     'expenses': expenses,
                     'summary': summary,
             }, status=status.HTTP_200_OK)

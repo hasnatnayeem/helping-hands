@@ -12,7 +12,7 @@ admin.site.site_title = 'Administration'
 
 @admin.register(Profile)
 class ProfileAdmin(admin.ModelAdmin):
-    fields = ('user', 'name', 'phone', 'email', 'address', 'photo')
+    fields = ('user', 'name', 'phone', 'email', 'blood_group', 'address', 'photo')
     list_display = ('name', 'phone', 'email', 'address', )
     list_filter = []
 
@@ -43,9 +43,13 @@ class ExpenseAdmin(admin.ModelAdmin):
     date_hierarchy = 'spent_at'
     fields = ('spender', 'amount', 'reference', 'spent_at', )
     list_display = ('spender', 'amount', 'reference', 'spent_at', 'logged_at')
+    list_display_links = None
 
     def get_form(self, request, obj=None, **kwargs):
         form = super(ExpenseAdmin, self).get_form(request, obj, **kwargs)
         if not obj:
             form.base_fields['spender'].queryset = Profile.objects.filter(user__id=request.user.id, user__is_staff=True, user__is_superuser=True)
         return form
+
+    def has_change_permission(self, request, obj=None):
+        return False

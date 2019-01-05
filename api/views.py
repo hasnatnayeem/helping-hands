@@ -112,8 +112,18 @@ def get_expense_summary(request):
     queryset = Expense.objects.all().order_by('-spent_at').filter(spent_at__year=today.year, spent_at__month=today.month)
     expenses = ExpenseSerializer(queryset, many=True).data
 
+    
+    
+    total_donations = Donation.objects.aggregate(Sum('amount'))['amount__sum']
+    total_expense = Expense.objects.aggregate(Sum('amount'))['amount__sum']
+    
+    if not total_donations:
+        total_donations = 0
+    if not total_expense:
+        total_expense = 0
+
     return Response({
-                    'balance': Donation.objects.aggregate(Sum('amount'))['amount__sum'] - Expense.objects.aggregate(Sum('amount'))['amount__sum'],
+                    'balance': total_donations - total_expense,
                     'expenses': expenses,
                     'summary': summary,
             }, status=status.HTTP_200_OK)
